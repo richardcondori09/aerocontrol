@@ -17,7 +17,6 @@ public class Coordenada implements Serializable {
 		this.altitud = altitud;
 	}
 
-	// Getters y Setters
 	public int getIdVuelo() {
 		return idVuelo;
 	}

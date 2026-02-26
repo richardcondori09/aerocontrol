@@ -17,12 +17,12 @@ public class VueloThread extends Thread {
 		try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
 			while (true) {
-				// 1. Leemos el objeto entrante
+				// Leemos el objeto entrante
 				Coordenada coord = (Coordenada) ois.readObject();
 				System.out.println("[Vuelo " + coord.getIdVuelo() + "] -> Lat: " + coord.getLatitud() + ", Lon: "
 						+ coord.getLongitud());
 
-				// 2. Usamos el Manager para guardar la coordenada de forma limpia
+				// Usamos el Manager para guardar la coordenada
 				CajaNegraManager.guardarCoordenada(coord);
 			}
 		} catch (EOFException e) {

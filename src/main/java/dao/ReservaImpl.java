@@ -43,7 +43,7 @@ public class ReservaImpl implements IReserva {
 
 			return ps.executeUpdate() > 0;
 		} catch (SQLIntegrityConstraintViolationException e) {
-			// Esto salta si se viola el UNIQUE(id_vuelo, asiento) de la base de datos
+			// Error para violación del UNIQUE(id_vuelo, asiento)
 			throw new Exception("El asiento " + reserva.getAsiento() + " ya está ocupado en este vuelo.");
 		} catch (SQLException e) {
 			throw new Exception("Error de base de datos: " + e.getMessage());

@@ -6,6 +6,7 @@ import models.Pasajero;
 import models.Reserva;
 import models.Vuelo;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 public class TicketPdfManager {
@@ -13,10 +14,13 @@ public class TicketPdfManager {
 	public static void generarTicket(Reserva reserva, Pasajero pasajero, Vuelo vuelo) {
 		// Nombre del archivo
 		String nombreArchivo = "Ticket_" + pasajero.getPasaporte() + "_Vuelo" + vuelo.getIdVuelo() + ".pdf";
+		// Definimos la ruta
+		String rutaCompleta = FileManager.getRutaTicket(nombreArchivo);
 		Document documento = new Document();
 
 		try {
-			PdfWriter.getInstance(documento, new FileOutputStream(nombreArchivo));
+			File archivoFisico = new File(rutaCompleta);
+			PdfWriter.getInstance(documento, new FileOutputStream(archivoFisico));
 			documento.open();
 
 			// Estilos de fuente
@@ -25,7 +29,7 @@ public class TicketPdfManager {
 			Font fontNormal = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
 
 			// Título
-			Paragraph titulo = new Paragraph("✈ AeroControl - Boarding Pass", fontTitulo);
+			Paragraph titulo = new Paragraph("AeroControl - Boarding Pass", fontTitulo);
 			titulo.setAlignment(Element.ALIGN_CENTER);
 			titulo.setSpacingAfter(20);
 			documento.add(titulo);
@@ -45,7 +49,7 @@ public class TicketPdfManager {
 					FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.RED)));
 
 			documento.close();
-			System.out.println("PDF Generado con éxito: " + nombreArchivo);
+			System.out.println("PDF Generado con éxito en: " + archivoFisico.getAbsolutePath());
 
 		} catch (Exception e) {
 			System.err.println("Error al generar el PDF: " + e.getMessage());

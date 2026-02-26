@@ -19,7 +19,6 @@ public class ExportadorController {
     public Response exportarManifiestoXML(@PathParam("idVuelo") int idVuelo) {
         try {
             // Simulamos obtener los pasajeros de ese vuelo
-            // Por simplicidad en este ejemplo, traemos todos los pasajeros
             List<Pasajero> pasajeros = new PasajeroImpl().listarTodos(); 
 
             ManifiestoVuelo manifiesto = new ManifiestoVuelo();

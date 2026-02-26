@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConectarBD {
-    public static String url = "jdbc:mysql://localhost:3306/aerocontrol_db";
+    public static String url = "jdbc:mysql://localhost:3306/aerocontrol_bd";
     public static String usuario = "root";
     public static String password = "";
     

@@ -1,16 +1,21 @@
 package telemetria;
 
 import models.Coordenada;
+import utils.FileManager;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CajaNegraManager {
 
-	// Guarda los datos primitivos recibidos por Socket
+	// Guarda los datos recibidos por Socket
 	public static void guardarCoordenada(Coordenada coord) {
 		String nombreArchivo = "cajanegra_vuelo_" + coord.getIdVuelo() + ".dat";
+		// Definimos la ruta
+		String rutaCompleta = FileManager.getRutaCajaNegra(nombreArchivo);
 
-		// Usamos el parámetro true que permite agregar datos al final del archivo
-		try (FileOutputStream fos = new FileOutputStream(nombreArchivo, true);
+		try (FileOutputStream fos = new FileOutputStream(rutaCompleta, true);
 				DataOutputStream dos = new DataOutputStream(fos)) {
 
 			dos.writeInt(coord.getIdVuelo());
@@ -27,14 +32,17 @@ public class CajaNegraManager {
 	// Lee el archivo completo para encontrar la última coordenada registrada
 	public static Coordenada recuperarUltimaPosicion(int idVuelo) {
 		String nombreArchivo = "cajanegra_vuelo_" + idVuelo + ".dat";
-		File file = new File(nombreArchivo);
+		//Definimos la ruta
+		String rutaCompleta = FileManager.getRutaCajaNegra(nombreArchivo);
+		
+		File file = new File(rutaCompleta);
 		if (!file.exists())
 			return null;
 
 		Coordenada ultima = null;
-		try (FileInputStream fis = new FileInputStream(file); DataInputStream dis = new DataInputStream(fis)) {
+		try (FileInputStream fis = new FileInputStream(file); 
+			DataInputStream dis = new DataInputStream(fis)) {
 
-			// Leemos secuencialmente hasta que no haya más bytes disponibles
 			while (dis.available() > 0) {
 				int id = dis.readInt();
 				double lat = dis.readDouble();
@@ -47,4 +55,33 @@ public class CajaNegraManager {
 		}
 		return ultima; // Retorna la última posición antes de que el avión se desconectara
 	}
+	
+	// Lee el archivo y trae todas las coordenadas
+    public static List<Coordenada> recuperarHistorialCompleto(int idVuelo) {
+        List<Coordenada> historial = new ArrayList<>();
+        String nombreArchivo = "cajanegra_vuelo_" + idVuelo + ".dat";
+        String rutaCompleta = FileManager.getRutaCajaNegra(nombreArchivo);
+        
+        File file = new File(rutaCompleta);
+        if (!file.exists()) return historial; // Retorna lista vacía si no hay archivo
+
+        try (FileInputStream fis = new FileInputStream(file); 
+             DataInputStream dis = new DataInputStream(fis)) {
+
+            while (true) {
+                try {
+                    int id = dis.readInt();
+                    double lat = dis.readDouble();
+                    double lon = dis.readDouble();
+                    double alt = dis.readDouble();
+                    historial.add(new Coordenada(id, lat, lon, alt));
+                } catch (EOFException e) {
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return historial; 
+    }
 }

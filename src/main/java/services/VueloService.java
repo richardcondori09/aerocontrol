@@ -31,4 +31,8 @@ public class VueloService {
 	public boolean despegarVuelo(int id) {
 		return vueloDao.actualizarEstado(id, "EN_VUELO");
 	}
+	
+	public boolean aterrizarVuelo(int id) {
+		return vueloDao.actualizarEstado(id, "ATERRIZADO");
+	}
 }

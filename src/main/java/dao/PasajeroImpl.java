@@ -64,7 +64,7 @@ public class PasajeroImpl implements IPasajero {
 
 	@Override
 	public boolean eliminar(int id) {
-		// Eliminación lógica: Pasamos el booleano a 0 (false)
+		// Eliminación lógica
 		String sql = "UPDATE pasajeros SET activo = 0 WHERE id_pasajero = ?";
 		try (Connection cn = ConectarBD.getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
 			ps.setInt(1, id);
