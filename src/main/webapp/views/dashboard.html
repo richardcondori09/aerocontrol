@@ -1,10 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroControl | Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div class="columns is-gapless" style="min-height: 100vh;">
+        
+        <aside class="column is-2 has-background-dark p-5">
+            <div class="mb-6 has-text-centered mt-2">
+                <a href="../index.html" style="text-decoration: none; display: block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-solid fa-plane-departure fa-2x has-text-info mb-3"></i>
+                    <h1 class="title is-4 has-text-white">AeroControl</h1>
+                </a>
+            </div>
+            
+            <p class="menu-label has-text-grey-light mt-5">Principal</p>
+            <ul class="menu-list">
+                <li><a href="dashboard.html" class="has-text-white has-background-info-dark mb-2 p-3"><i class="fa-solid fa-chart-pie mr-3"></i> Dashboard</a></li>
+            </ul>
 
+            <p class="menu-label has-text-grey-light mt-5">Operaciones</p>
+            <ul class="menu-list">
+                <li><a href="flota.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-jet-fighter mr-3"></i> Flota</a></li>
+                <li><a href="tripulacion.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-users-viewfinder mr-3"></i> Tripulación</a></li>
+                <li><a href="vuelos.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-map-location-dot mr-3"></i> Vuelos</a></li>
+            </ul>
+
+            <p class="menu-label has-text-grey-light mt-5">Comercial & Radar</p>
+            <ul class="menu-list">
+                <li><a href="pasajeros.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-passport mr-3"></i> Pasajeros</a></li>
+                <li><a href="reservas.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-ticket mr-3"></i> Reservas</a></li>
+                <li><a href="radar.html" class="has-text-grey-light mt-2"><i class="fa-solid fa-satellite-dish mr-3"></i> Radar LATAM</a></li>
+            </ul>
+        </aside>
+
+        <main class="column is-10 has-background-light p-6">
+            <h2 class="title is-3 has-text-dark mb-6">
+                <i class="fa-solid fa-chart-line has-text-info mr-2"></i> Resumen Operativo
+            </h2>
+
+            <div class="columns is-multiline">
+                
+                <div class="column is-3">
+                    <div class="box has-background-info has-text-white" style="border-radius: 12px;">
+                        <div class="is-flex is-justify-content-space-between is-align-items-center">
+                            <div>
+                                <p class="heading is-size-6">Vuelos Activos</p>
+                                <p class="title is-1 has-text-white" id="stat-vuelos">-</p>
+                            </div>
+                            <i class="fa-solid fa-plane-up fa-3x opacity-50" style="opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-3">
+                    <div class="box has-background-success has-text-white" style="border-radius: 12px;">
+                        <div class="is-flex is-justify-content-space-between is-align-items-center">
+                            <div>
+                                <p class="heading is-size-6">Flota Disponible</p>
+                                <p class="title is-1 has-text-white" id="stat-aviones">-</p>
+                            </div>
+                            <i class="fa-solid fa-jet-fighter fa-3x opacity-50" style="opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-3">
+                    <div class="box has-background-warning" style="border-radius: 12px;">
+                        <div class="is-flex is-justify-content-space-between is-align-items-center">
+                            <div>
+                                <p class="heading is-size-6 has-text-dark">Total Pasajeros</p>
+                                <p class="title is-1 has-text-dark" id="stat-pasajeros">-</p>
+                            </div>
+                            <i class="fa-solid fa-users fa-3x opacity-50" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-3">
+                    <div class="box has-background-danger has-text-white" style="border-radius: 12px;">
+                        <div class="is-flex is-justify-content-space-between is-align-items-center">
+                            <div>
+                                <p class="heading is-size-6">Tickets Vendidos</p>
+                                <p class="title is-1 has-text-white" id="stat-reservas">-</p>
+                            </div>
+                            <i class="fa-solid fa-ticket fa-3x opacity-50" style="opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="notification is-white mt-5 p-5" style="border-left: 5px solid #3e8ed0; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <h4 class="title is-4">¡Bienvenido al Centro de Mando AeroControl!</h4>
+                <p class="subtitle is-6 mt-2 has-text-grey">
+                    El sistema está en línea y conectado a la base de datos. Utilice el menú lateral para gestionar la flota, programar rutas o supervisar la telemetría en tiempo real desde el Radar LATAM.
+                </p>
+            </div>
+            
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hacemos 4 peticiones simultáneas a tu API
+            Promise.all([
+                fetch('/Aero/api/vuelos').then(r => r.json()),
+                fetch('/Aero/api/aviones').then(r => r.json()),
+                fetch('/Aero/api/pasajeros').then(r => r.json()),
+                fetch('/Aero/api/reservas').then(r => r.json())
+            ]).then(([vuelos, aviones, pasajeros, reservas]) => {
+                // Filtramos vuelos en curso o programados
+                let vuelosActivos = vuelos.filter(v => v.estado === 'EN_VUELO' || v.estado === 'PROGRAMADO').length;
+                let avionesDisponibles = aviones.filter(a => a.estado === 'ACTIVO').length;
+
+                // Pintamos los números en el HTML
+                document.getElementById('stat-vuelos').textContent = vuelosActivos;
+                document.getElementById('stat-aviones').textContent = avionesDisponibles;
+                document.getElementById('stat-pasajeros').textContent = pasajeros.length;
+                document.getElementById('stat-reservas').textContent = reservas.length;
+            }).catch(err => console.error("Error cargando dashboard:", err));
+        });
+    </script>
 </body>
 </html>

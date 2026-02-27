@@ -24,6 +24,7 @@ public class PasajeroImpl implements IPasajero {
 				p.setPasaporte(rs.getString("pasaporte"));
 				p.setNombre(rs.getString("nombre"));
 				p.setEmail(rs.getString("email"));
+				p.setActivo(rs.getBoolean("activo"));
 				lista.add(p);
 			}
 		} catch (SQLException e) {
@@ -87,11 +88,42 @@ public class PasajeroImpl implements IPasajero {
 					p.setPasaporte(rs.getString("pasaporte"));
 					p.setNombre(rs.getString("nombre"));
 					p.setEmail(rs.getString("email"));
+					p.setActivo(rs.getBoolean("activo"));
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return p;
+	}
+
+	@Override
+	public List<Pasajero> listarPorVuelo(int idVuelo) {
+		List<Pasajero> lista = new ArrayList<>();
+		// Hacemos INNER JOIN con reservas para obtener solo los de ese vuelo
+		String sql = "SELECT p.* FROM pasajeros p " +
+					 "INNER JOIN reservas r ON p.id_pasajero = r.id_pasajero " +
+					 "WHERE r.id_vuelo = ? AND p.activo = 1";
+
+		try (Connection cn = ConectarBD.getConexion();
+			 PreparedStatement ps = cn.prepareStatement(sql)) {
+			
+			ps.setInt(1, idVuelo);
+			
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					Pasajero p = new Pasajero();
+					p.setIdPasajero(rs.getInt("id_pasajero")); 
+					p.setPasaporte(rs.getString("pasaporte"));
+					p.setNombre(rs.getString("nombre"));
+					p.setEmail(rs.getString("email"));
+					p.setActivo(rs.getBoolean("activo"));
+					lista.add(p);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
 	}
 }

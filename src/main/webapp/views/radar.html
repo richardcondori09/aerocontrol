@@ -1,10 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroControl | Radar Centrado en Lima</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .radar-wrapper {
+            background-color: #021114;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            position: relative;
+            /* Escalado dinámico: Tan grande como tu pantalla, sin scroll */
+            width: 100%;
+            max-width: 85vh; 
+            aspect-ratio: 1/1;
+            margin: 0 auto;
+        }
+        .radar-sweep {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            background: conic-gradient(from 0deg, transparent 75%, rgba(0, 255, 136, 0.4) 100%);
+            border-radius: 50%;
+            transform-origin: center;
+            animation: sweep 4s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes sweep { to { transform: rotate(360deg); } }
+        
+        /* Animación suave para la barra de estado */
+        .status-panel {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+    </style>
 </head>
 <body>
+    <div class="columns is-gapless" style="min-height: 100vh;">
+        
+        <aside class="column is-2 has-background-dark p-5">
+            <div class="mb-6 has-text-centered mt-2">
+                <a href="../index.html" style="text-decoration: none; display: block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-solid fa-plane-departure fa-2x has-text-info mb-3"></i>
+                    <h1 class="title is-4 has-text-white">AeroControl</h1>
+                </a>
+            </div>
+            
+            <p class="menu-label has-text-grey-light mt-5">Principal</p>
+            <ul class="menu-list">
+                <li><a href="dashboard.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-chart-pie mr-3"></i> Dashboard</a></li>
+            </ul>
 
+            <p class="menu-label has-text-grey-light mt-5">Operaciones</p>
+            <ul class="menu-list">
+                <li><a href="flota.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-jet-fighter mr-3"></i> Flota</a></li>
+                <li><a href="tripulacion.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-users-viewfinder mr-3"></i> Tripulación</a></li>
+                <li><a href="vuelos.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-map-location-dot mr-3"></i> Vuelos</a></li>
+            </ul>
+
+            <p class="menu-label has-text-grey-light mt-5">Comercial & Radar</p>
+            <ul class="menu-list">
+                <li><a href="pasajeros.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-passport mr-3"></i> Pasajeros</a></li>
+                <li><a href="reservas.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-ticket mr-3"></i> Reservas</a></li>
+                <li><a href="radar.html" class="has-text-white has-background-info-dark mb-2 p-3"><i class="fa-solid fa-satellite-dish mr-3"></i> Radar LATAM</a></li>
+            </ul>
+        </aside>
+
+        <main class="column is-10 has-background-light p-5 pl-6">
+            
+            <div class="columns is-variable is-6 mt-2">
+                
+                <div class="column is-3 is-flex is-flex-direction-column">
+                    <h2 class="title is-4 has-text-dark mt-5 ml-5 mb-5"><i class="fa-solid fa-tower-observation has-text-info mr-2"></i> Torre Lima</h2>
+                    
+                    <div class="box p-5 mb-5" style="border-radius: 12px; min-height: 45vh; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                        <label class="label has-text-grey">Vuelos en Curso</label>
+                        <div class="field has-addons mb-4">
+                            <div class="control is-expanded">
+                                <div class="select is-fullwidth">
+                                    <select id="selectVuelo"><option value="">Cargando...</option></select>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <button class="button is-light" onclick="cargarVuelosActivos()"><i class="fa-solid fa-rotate-right"></i></button>
+                            </div>
+                        </div>
+                        <button class="button is-info is-fullwidth mb-6" onclick="iniciarRastreo()" id="btnRastrear" disabled>
+                            <i class="fa-solid fa-crosshairs mr-2"></i> Iniciar Rastreo
+                        </button>
+
+                        <hr class="mb-5">
+                        
+                        <div class="content is-medium">
+                            <h4 class="has-text-grey mb-4">Telemetría en Vivo</h4>
+                            <div class="is-flex is-justify-content-space-between border-bottom pb-3 mb-3">
+                                <span class="has-text-weight-bold">Latitud:</span> <span id="data-lat" class="has-text-info">--</span>
+                            </div>
+                            <div class="is-flex is-justify-content-space-between border-bottom pb-3 mb-3">
+                                <span class="has-text-weight-bold">Longitud:</span> <span id="data-lon" class="has-text-info">--</span>
+                            </div>
+                            <div class="is-flex is-justify-content-space-between border-bottom pb-3 mb-3">
+                                <span class="has-text-weight-bold">Altitud:</span> <span id="data-alt" class="has-text-success">-- ft</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="panel-estado-global" class="notification status-panel p-5 has-text-centered has-background-white" style="border: 2px dashed #dbdbdb;">
+                        <h1 id="estado-titulo" class="title is-4 m-0 has-text-grey-light"><i class="fa-solid fa-satellite"></i> MODO ESPERA</h1>
+                        <p id="estado-sub" class="subtitle is-6 mt-2 has-text-grey-light">Seleccione un vuelo para rastrear</p>
+                    </div>
+                </div>
+
+                <div class="column is-9 is-flex is-justify-content-center is-align-items-flex-start pt-4">
+                    <div class="radar-wrapper">
+                        
+                        <div class="radar-sweep" id="sweep-anim" style="display:none;"></div>
+                        
+                        <svg id="radar-svg" viewBox="0 0 1000 1000" style="width: 100%; height: 100%; border-radius: 50%; background-color: #031b21;">
+                            
+                            <circle cx="500" cy="500" r="480" fill="none" stroke="#0a3d45" stroke-width="2"/>
+                            <circle cx="500" cy="500" r="320" fill="none" stroke="#0a3d45" stroke-width="2"/>
+                            <circle cx="500" cy="500" r="160" fill="none" stroke="#0a3d45" stroke-width="2"/>
+                            <line x1="500" y1="20" x2="500" y2="980" stroke="#0a3d45" stroke-width="1"/>
+                            <line x1="20" y1="500" x2="980" y2="500" stroke="#0a3d45" stroke-width="1"/>
+
+                            <text x="500" y="45" fill="#0a3d45" font-size="28" font-weight="bold" text-anchor="middle">N</text>
+                            <text x="500" y="975" fill="#0a3d45" font-size="28" font-weight="bold" text-anchor="middle">S</text>
+                            <text x="965" y="510" fill="#0a3d45" font-size="28" font-weight="bold">E</text>
+                            <text x="15" y="510" fill="#0a3d45" font-size="28" font-weight="bold">O</text>
+
+                            <circle cx="500" cy="500" r="8" fill="#ffdd57" />
+                            <text x="515" y="495" fill="#ffdd57" font-size="18" font-weight="bold">LIMA (Jorge Chávez)</text>
+
+                            <g id="ciudades-ref" fill="#4a7b85" font-size="15"></g>
+                            
+                            <polyline id="ruta-vuelo" fill="none" stroke="#00ff88" stroke-width="4" stroke-dasharray="12,8" opacity="0.8"/>
+                            
+                            <g id="avion-marcador" style="display: none; transition: transform 2.5s ease-out;">
+                                <circle cx="0" cy="0" r="25" fill="rgba(0, 255, 136, 0.2)">
+                                    <animate attributeName="r" values="5; 40; 5" dur="1s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="1; 0; 1" dur="1s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="0" cy="0" r="7" fill="#00ff88" />
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../assets/js/radar.js"></script>
 </body>
 </html>

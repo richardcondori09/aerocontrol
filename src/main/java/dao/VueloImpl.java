@@ -37,7 +37,9 @@ public class VueloImpl implements IVuelo {
 	@Override
 	public boolean registrar(Vuelo vuelo) {
 		String sql = "INSERT INTO vuelos (id_avion, origen, destino, fecha_salida, estado) VALUES (?, ?, ?, ?, ?)";
-		try (Connection cn = ConectarBD.getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
+        // Añadimos Statement.RETURN_GENERATED_KEYS para obtener el ID del vuelo recién creado
+		try (Connection cn = ConectarBD.getConexion(); 
+             PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			ps.setInt(1, vuelo.getIdAvion());
 			ps.setString(2, vuelo.getOrigen());
@@ -45,7 +47,18 @@ public class VueloImpl implements IVuelo {
 			ps.setString(4, vuelo.getFechaSalida());
 			ps.setString(5, vuelo.getEstado() != null ? vuelo.getEstado() : "PROGRAMADO");
 
-			return ps.executeUpdate() > 0;
+			int filas = ps.executeUpdate();
+            if (filas > 0) {
+                // Si el vuelo se guardó, guardamos a su tripulación en la tabla intermedia
+                try (ResultSet rsKeys = ps.getGeneratedKeys()) {
+                    if (rsKeys.next()) {
+                        int idVueloGen = rsKeys.getInt(1);
+                        insertarTripulacion(cn, idVueloGen, vuelo.getIdPiloto(), vuelo.getIdCopiloto(), vuelo.getIdAzafata());
+                    }
+                }
+                return true;
+            }
+            return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -76,9 +89,19 @@ public class VueloImpl implements IVuelo {
 			ps.setString(4, vuelo.getFechaSalida());
 			ps.setString(5, vuelo.getEstado());
 			ps.setInt(6, vuelo.getIdVuelo());
-			return ps.executeUpdate() > 0;
+			
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                // Al actualizar, borramos la tripulación vieja y metemos la nueva
+                String sqlDel = "DELETE FROM vuelo_tripulacion WHERE id_vuelo = ?";
+                try (PreparedStatement psDel = cn.prepareStatement(sqlDel)) {
+                    psDel.setInt(1, vuelo.getIdVuelo());
+                    psDel.executeUpdate();
+                }
+                insertarTripulacion(cn, vuelo.getIdVuelo(), vuelo.getIdPiloto(), vuelo.getIdCopiloto(), vuelo.getIdAzafata());
+            }
+			return filas > 0;
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -111,6 +134,8 @@ public class VueloImpl implements IVuelo {
 					v.setDestino(rs.getString("destino"));
 					v.setFechaSalida(rs.getString("fecha_salida"));
 					v.setEstado(rs.getString("estado"));
+					
+					cargarTripulacion(cn, v);
 				}
 			}
 		} catch (SQLException e) {
@@ -118,4 +143,31 @@ public class VueloImpl implements IVuelo {
 		}
 		return v;
 	}
+	
+	private void insertarTripulacion(Connection cn, int idVuelo, int idPiloto, int idCopiloto, int idAzafata) throws SQLException {
+        String sql = "INSERT INTO vuelo_tripulacion (id_vuelo, id_tripulante) VALUES (?, ?)";
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            if (idPiloto > 0) { ps.setInt(1, idVuelo); ps.setInt(2, idPiloto); ps.addBatch(); }
+            if (idCopiloto > 0) { ps.setInt(1, idVuelo); ps.setInt(2, idCopiloto); ps.addBatch(); }
+            if (idAzafata > 0) { ps.setInt(1, idVuelo); ps.setInt(2, idAzafata); ps.addBatch(); }
+            ps.executeBatch();
+        }
+    }
+    
+    private void cargarTripulacion(Connection cn, Vuelo v) throws SQLException {
+        String sql = "SELECT t.id_tripulante, t.rol FROM vuelo_tripulacion vt " +
+                     "INNER JOIN tripulacion t ON vt.id_tripulante = t.id_tripulante WHERE vt.id_vuelo = ?";
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, v.getIdVuelo());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int idTrip = rs.getInt("id_tripulante");
+                    String rol = rs.getString("rol");
+                    if ("PILOTO".equals(rol)) v.setIdPiloto(idTrip);
+                    else if ("COPILOTO".equals(rol)) v.setIdCopiloto(idTrip);
+                    else if ("AZAFATA".equals(rol)) v.setIdAzafata(idTrip);
+                }
+            }
+        }
+    }
 }

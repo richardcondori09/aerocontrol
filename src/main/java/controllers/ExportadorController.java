@@ -18,8 +18,8 @@ public class ExportadorController {
     @Produces(MediaType.APPLICATION_XML)
     public Response exportarManifiestoXML(@PathParam("idVuelo") int idVuelo) {
         try {
-            // Simulamos obtener los pasajeros de ese vuelo
-            List<Pasajero> pasajeros = new PasajeroImpl().listarTodos(); 
+            // Traemos a los pasajeros de este vuelo
+        	List<Pasajero> pasajeros = new PasajeroImpl().listarPorVuelo(idVuelo);
 
             ManifiestoVuelo manifiesto = new ManifiestoVuelo();
             manifiesto.setIdVuelo(idVuelo);

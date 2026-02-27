@@ -2,6 +2,8 @@ package controllers;
 
 import models.Vuelo;
 import services.VueloService;
+import simulador.AvionSimuladoThread;
+
 import com.google.gson.Gson;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -71,11 +73,27 @@ public class VueloController {
     @Path("/{id}/despegar")
     @Produces(MediaType.APPLICATION_JSON)
     public Response iniciarVuelo(@PathParam("id") int idVuelo) {
+        // Primero cambiamos el estado en BD a EN_VUELO
         if (vueloService.despegarVuelo(idVuelo)) {
-            return Response.ok("{\"mensaje\":\"El vuelo ha despegado\"}").build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND)
-                           .entity("{\"error\":\"Vuelo no encontrado\"}").build();
-        }
+            // Obtenemos los datos completos del vuelo para la simulación
+            Vuelo vuelo = vueloService.obtenerVueloPorId(idVuelo);
+            if (vuelo != null) {
+                try {
+                    // Iniciamos el hilo de simulación de forma independiente
+                    System.out.println("API: Iniciando simulación para el vuelo " + idVuelo);
+                    AvionSimuladoThread hiloSimulacion = new AvionSimuladoThread(vuelo);
+                    hiloSimulacion.start();
+                    
+                    return Response.ok("{\"mensaje\":\"El vuelo ha despegado y la simulación ha iniciado\"}").build();
+                    
+                } catch (Exception e) {
+                    System.err.println("Error al iniciar hilo de simulación: " + e.getMessage());
+                    // Devolvemos ok porque el estado se cambió, aunque la simulación fallara
+                    return Response.ok("{\"mensaje\":\"Vuelo en estado EN_VUELO, pero la simulación falló (Verifique RadarServer)\"}").build();
+                }
+            }
+        } 
+        return Response.status(Response.Status.NOT_FOUND)
+                       .entity("{\"error\":\"Vuelo no encontrado o no se pudo actualizar\"}").build();
     }
 }

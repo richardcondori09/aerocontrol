@@ -24,6 +24,7 @@ public class TripulanteImpl implements ITripulante {
 				t.setNombre(rs.getString("nombre"));
 				t.setRol(rs.getString("rol"));
 				t.setLicencia(rs.getString("licencia"));
+				t.setActivo(rs.getBoolean("activo"));
 				lista.add(t);
 			}
 		} catch (SQLException e) {
@@ -34,6 +35,9 @@ public class TripulanteImpl implements ITripulante {
 
 	@Override
 	public boolean registrar(Tripulante tripulante) {
+		
+		tripulante.setLicencia(generarLicencia(tripulante.getRol()));
+		
 		String sql = "INSERT INTO tripulacion (nombre, rol, licencia) VALUES (?, ?, ?)";
 		try (Connection cn = ConectarBD.getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
 
@@ -86,11 +90,57 @@ public class TripulanteImpl implements ITripulante {
 					t.setNombre(rs.getString("nombre"));
 					t.setRol(rs.getString("rol"));
 					t.setLicencia(rs.getString("licencia"));
+					t.setActivo(rs.getBoolean("activo"));
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return t;
+	}
+
+	private String generarLicencia(String rol) {
+		String prefijo = "";
+		switch (rol) {
+		case "PILOTO":
+			prefijo = "LIC-PIL-";
+			break;
+		case "COPILOTO":
+			prefijo = "LIC-COP-";
+			break;
+		case "AZAFATA":
+			prefijo = "LIC-AZA-";
+			break;
+		}
+
+		// Buscamos la última licencia registrada para ese rol específico
+		String sql = "SELECT licencia FROM tripulacion WHERE rol = ? ORDER BY id_tripulante DESC LIMIT 1";
+		int maxNumero = 0;
+
+		try (Connection cn = ConectarBD.getConexion(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+			ps.setString(1, rol);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					String ultimaLicencia = rs.getString("licencia");
+
+					if (ultimaLicencia != null && ultimaLicencia.contains("-")) {
+						String[] partes = ultimaLicencia.split("-");
+						if (partes.length == 3) {
+							try {
+								maxNumero = Integer.parseInt(partes[2]); // Extraemos el "004" -> 4
+							} catch (NumberFormatException e) {
+								maxNumero = 0;
+							}
+						}
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		maxNumero++; // Le sumamos 1 al último encontrado
+		return String.format("%s%03d", prefijo, maxNumero); // Lo formateamos a 3 dígitos (Ej. 005)
 	}
 }

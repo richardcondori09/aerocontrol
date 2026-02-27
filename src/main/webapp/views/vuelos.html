@@ -1,10 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroControl | Gestión de Vuelos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div class="columns is-gapless" style="min-height: 100vh;">
+        
+        <aside class="column is-2 has-background-dark p-5">
+            <div class="mb-6 has-text-centered mt-2">
+                <a href="../index.html" style="text-decoration: none; display: block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-solid fa-plane-departure fa-2x has-text-info mb-3"></i>
+                    <h1 class="title is-4 has-text-white">AeroControl</h1>
+                </a>
+            </div>
+            
+            <p class="menu-label has-text-grey-light mt-5">Principal</p>
+            <ul class="menu-list">
+                <li><a href="dashboard.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-chart-pie mr-3"></i> Dashboard</a></li>
+            </ul>
 
+            <p class="menu-label has-text-grey-light mt-5">Operaciones</p>
+            <ul class="menu-list">
+                <li><a href="flota.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-jet-fighter mr-3"></i> Flota</a></li>
+                <li><a href="tripulacion.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-users-viewfinder mr-3"></i> Tripulación</a></li>
+                <li><a href="vuelos.html" class="has-text-white has-background-info-dark mb-2 p-3" style="border-radius: 6px;"><i class="fa-solid fa-map-location-dot mr-3"></i> Vuelos</a></li>
+            </ul>
+
+            <p class="menu-label has-text-grey-light mt-5">Comercial & Radar</p>
+            <ul class="menu-list">
+                <li><a href="pasajeros.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-passport mr-3"></i> Pasajeros</a></li>
+                <li><a href="reservas.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-ticket mr-3"></i> Reservas</a></li>
+                <li><a href="radar.html" class="has-text-grey-light mt-2"><i class="fa-solid fa-satellite-dish mr-3"></i> Radar LATAM</a></li>
+            </ul>
+        </aside>
+
+        <main class="column is-10 has-background-light p-6">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-6">
+                <h2 class="title is-3 has-text-dark m-0">
+                    <i class="fa-solid fa-map-location-dot has-text-info mr-2"></i> Itinerario de Vuelos
+                </h2>
+                <button class="button is-info" onclick="abrirModalVuelo()">
+                    <i class="fa-solid fa-plus mr-2"></i> Programar Vuelo
+                </button>
+            </div>
+
+            <div class="box" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div class="table-container">
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>N° Vuelo</th>
+                                <th>Ruta (Origen ➔ Destino)</th>
+                                <th>Fecha y Hora</th>
+                                <th>Estado</th>
+                                <th class="has-text-centered">Acciones (Radar / XML)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-vuelos">
+                            <tr><td colspan="5" class="has-text-centered py-5"><i class="fa-solid fa-spinner fa-spin has-text-info mr-2"></i> Cargando vuelos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="modalVuelo">
+        <div class="modal-background" onclick="cerrarModalVuelo()"></div>
+        <div class="modal-card" style="width: 600px;">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-weight-bold" id="modal-vuelo-titulo">Programar Vuelo</p>
+                <button class="delete" aria-label="close" onclick="cerrarModalVuelo()"></button>
+            </header>
+            <section class="modal-card-body">
+                <form id="formVuelo">
+                    <input type="hidden" id="inputIdVuelo">
+                    
+                    <div class="columns" id="divRutaVuelo">
+                        <div class="column">
+                            <label class="label">Origen</label>
+                            <div class="select is-fullwidth">
+                                <select id="selectOrigen" required></select>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <label class="label">Destino</label>
+                            <div class="select is-fullwidth">
+                                <select id="selectDestino" required></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Fecha y Hora de Salida</label>
+                        <input class="input" type="datetime-local" id="inputFecha" required>
+                    </div>
+
+                    <div class="field" id="divAsignarAvion">
+                        <label class="label">Asignar Avión</label>
+                        <div class="select is-fullwidth">
+                            <select id="selectAvion" required><option value="">Cargando aviones...</option></select>
+                        </div>
+                    </div>
+
+                    <div class="columns">
+                        <div class="column">
+                            <label class="label">Piloto</label>
+                            <div class="select is-fullwidth"><select id="selectPiloto" required></select></div>
+                        </div>
+                        <div class="column">
+                            <label class="label">Copiloto</label>
+                            <div class="select is-fullwidth"><select id="selectCopiloto" required></select></div>
+                        </div>
+                        <div class="column">
+                            <label class="label">Azafata</label>
+                            <div class="select is-fullwidth"><select id="selectAzafata" required></select></div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Estado</label>
+                        <div class="select is-fullwidth">
+                            <select id="selectEstadoVuelo" disabled>
+                                <option value="PROGRAMADO">PROGRAMADO</option>
+                                <option value="CANCELADO">CANCELADO</option>
+                                <option value="EN_VUELO">EN_VUELO</option>
+                                <option value="ATERRIZADO">ATERRIZADO</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot is-justify-content-flex-end">
+                <button type="button" class="button" onclick="cerrarModalVuelo()">Cancelar</button>
+                <button type="button" class="button is-info" onclick="guardarVuelo()">Guardar Vuelo</button>
+            </footer>
+        </div>
+    </div>
+    <script src="../assets/js/vuelos.js"></script>
 </body>
 </html>

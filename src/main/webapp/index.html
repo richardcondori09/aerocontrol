@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroControl | Inicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Efecto de elevación suave al pasar el mouse sobre las tarjetas */
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 16px;
+            height: 100%;
+        }
+        .hover-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        }
+        /* Para que toda la tarjeta funcione como un enlace clickeable */
+        a.card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="has-background-light">
+
+    <section class="hero is-dark is-medium" style="background: linear-gradient(135deg, #021114 0%, #0a3d45 100%);">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <i class="fa-solid fa-plane-departure fa-4x has-text-info mb-4"></i>
+                <p class="title is-1 has-text-white">AeroControl</p>
+                <p class="subtitle is-4 has-text-grey-light mt-3">
+                    Sistema Integral de Gestión Aeroportuaria y Telemetría
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="columns is-multiline is-centered">
+
+                <div class="column is-4">
+                    <a href="views/radar.html" class="card-link">
+                        <div class="box hover-card has-background-info has-text-white has-text-centered p-6">
+                            <i class="fa-solid fa-satellite-dish fa-3x mb-4"></i>
+                            <h2 class="title is-4 has-text-white">Radar LATAM</h2>
+                            <p>Supervisión de telemetría y ubicación de vuelos en tiempo real.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="column is-4">
+                    <a href="views/dashboard.html" class="card-link">
+                        <div class="box hover-card has-background-white has-text-centered p-6" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-chart-pie fa-3x has-text-dark mb-4"></i>
+                            <h2 class="title is-4 has-text-dark">Dashboard</h2>
+                            <p class="has-text-grey">Resumen operativo y métricas generales del aeropuerto.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="column is-4">
+                    <a href="views/vuelos.html" class="card-link">
+                        <div class="box hover-card has-background-white has-text-centered p-6" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-map-location-dot fa-3x has-text-link mb-4"></i>
+                            <h2 class="title is-4 has-text-dark">Vuelos</h2>
+                            <p class="has-text-grey">Programación de itinerarios, despegues y manifiestos XML.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="column is-3">
+                    <a href="views/reservas.html" class="card-link">
+                        <div class="box hover-card has-background-white has-text-centered p-5" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-ticket fa-2x has-text-success mb-3"></i>
+                            <h2 class="title is-5 has-text-dark">Reservas</h2>
+                            <p class="has-text-grey is-size-7">Venta de tickets y generación de Boarding Pass (PDF).</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="column is-3">
+                    <a href="views/flota.html" class="card-link">
+                        <div class="box hover-card has-background-white has-text-centered p-5" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-jet-fighter fa-2x has-text-grey-dark mb-3"></i>
+                            <h2 class="title is-5 has-text-dark">Flota</h2>
+                            <p class="has-text-grey is-size-7">Gestión de aviones, capacidades y estados de mantenimiento.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="column is-3">
+                    <a href="views/tripulacion.html" class="card-link">
+                        <div class="box hover-card has-background-white has-text-centered p-5" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-users-viewfinder fa-2x has-text-primary mb-3"></i>
+                            <h2 class="title is-5 has-text-dark">Tripulación</h2>
+                            <p class="has-text-grey is-size-7">Administración de pilotos, copilotos y azafatas.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="column is-3">
+                    <a href="views/pasajeros.html" class="card-link">
+                        <div class="box hover-card has-background-white has-text-centered p-5" style="box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <i class="fa-solid fa-passport fa-2x has-text-warning-dark mb-3"></i>
+                            <h2 class="title is-5 has-text-dark">Pasajeros</h2>
+                            <p class="has-text-grey is-size-7">Directorio de clientes e historial de documentos.</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer has-background-light pb-6">
+        <div class="content has-text-centered has-text-grey">
+            <p><strong>AeroControl</strong></p>
+        </div>
+    </footer>
+
+</body>
+</html>

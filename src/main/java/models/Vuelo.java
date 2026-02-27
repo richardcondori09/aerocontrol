@@ -7,6 +7,9 @@ public class Vuelo {
 	private String destino;
 	private String fechaSalida; // Formato esperado: "YYYY-MM-DD HH:MM:SS"
 	private String estado;
+	private int idPiloto;
+	private int idCopiloto;
+	private int idAzafata;
 
 	public Vuelo() {
 	}
@@ -59,4 +62,30 @@ public class Vuelo {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+
+	public int getIdPiloto() {
+		return idPiloto;
+	}
+
+	public void setIdPiloto(int idPiloto) {
+		this.idPiloto = idPiloto;
+	}
+
+	public int getIdCopiloto() {
+		return idCopiloto;
+	}
+
+	public void setIdCopiloto(int idCopiloto) {
+		this.idCopiloto = idCopiloto;
+	}
+
+	public int getIdAzafata() {
+		return idAzafata;
+	}
+
+	public void setIdAzafata(int idAzafata) {
+		this.idAzafata = idAzafata;
+	}
+	
+	
 }
