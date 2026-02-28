@@ -7,44 +7,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ESTILOS DEL MAPA DE ASIENTOS Y FUSELAJE */
-        .plane-fuselage {
-            background: #f8f9fa;
-            border-radius: 80px 80px 20px 20px;
-            padding: 30px 10px;
-            border: 4px solid #ced4da;
-            max-width: 350px;
-            margin: 0 auto;
-            max-height: 300px;
-            overflow-y: auto;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
-        }
-        .seat-row {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 8px;
-        }
-        .seat {
-            width: 35px;
-            height: 35px;
-            margin: 0 4px;
-            border-radius: 8px 8px 4px 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        .plane-fuselage { background: #f8f9fa; border-radius: 80px 80px 20px 20px; padding: 30px 10px; border: 4px solid #ced4da; max-width: 350px; margin: 0 auto; max-height: 300px; overflow-y: auto; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); }
+        .seat-row { display: flex; justify-content: center; margin-bottom: 8px; }
+        .seat { width: 35px; height: 35px; margin: 0 4px; border-radius: 8px 8px 4px 4px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .seat:hover:not(.is-danger) { transform: translateY(-3px); }
         .seat.is-available { background-color: #48c774; color: white; border-bottom: 3px solid #369b56; }
         .seat.is-danger { background-color: #f14668; color: white; cursor: not-allowed; opacity: 0.6; border-bottom: 3px solid #c23853;}
         .seat.is-selected { background-color: #3298dc; color: white; box-shadow: 0 0 12px #3298dc; border-bottom: 3px solid #226b9c; transform: translateY(-3px); }
-        .aisle { width: 25px; } /* El Pasillo del avión */
-        
-        /* Personalizar el scroll del avión */
+        .aisle { width: 25px; }
         .plane-fuselage::-webkit-scrollbar { width: 6px; }
         .plane-fuselage::-webkit-scrollbar-thumb { background: #b5b5b5; border-radius: 10px; }
     </style>
@@ -75,90 +45,68 @@
             </ul>
         </aside>
 
-        <main class="column is-10 has-background-light p-6">
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-6">
-                <h2 class="title is-3 has-text-dark m-0">
-                    <i class="fa-solid fa-ticket has-text-info mr-2"></i> Gestión de Reservas
-                </h2>
-                <button class="button is-info" onclick="abrirModalReserva()">
-                    <i class="fa-solid fa-cart-plus mr-2"></i> Vender Ticket
-                </button>
-            </div>
+        <main class="column is-10 has-background-light p-0" style="display: flex; flex-direction: column; min-height: 100vh;">
+            
+            <div style="flex-grow: 1;"></div>
 
-            <div class="box" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <div class="table-container">
-                    <table class="table is-fullwidth is-striped is-hoverable">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Vuelo (Ruta)</th>
-                                <th>Pasajero</th>
-                                <th>Asiento</th>
-                                <th>Fecha Compra</th>
-                                <th class="has-text-centered">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-reservas">
-                            <tr><td colspan="6" class="has-text-centered py-5"><i class="fa-solid fa-spinner fa-spin has-text-info mr-2"></i> Cargando ventas...</td></tr>
-                        </tbody>
-                    </table>
+            <div class="container is-max-desktop px-6 py-6" style="width: 100%;">
+                <div class="is-flex is-justify-content-space-between is-align-items-center mb-6">
+                    <h2 class="title is-3 has-text-dark m-0">
+                        <i class="fa-solid fa-ticket has-text-info mr-2"></i> Gestión de Reservas
+                    </h2>
+                    <button class="button is-info" onclick="abrirModalReserva()">
+                        <i class="fa-solid fa-cart-plus mr-2"></i> Vender Ticket
+                    </button>
+                </div>
+
+                <div class="box" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div class="table-container">
+                        <table class="table is-fullwidth is-striped is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Vuelo (Ruta)</th>
+                                    <th>Pasajero</th>
+                                    <th>Asiento</th>
+                                    <th>Fecha Compra</th>
+                                    <th class="has-text-centered">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-reservas">
+                                <tr><td colspan="6" class="has-text-centered py-5"><i class="fa-solid fa-spinner fa-spin has-text-info mr-2"></i> Cargando ventas...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
+            <div style="flex-grow: 2;"></div>
+
         </main>
     </div>
 
     <div class="modal" id="modalReserva">
         <div class="modal-background" onclick="cerrarModalReserva()"></div>
-        <div class="modal-card" style="width: 700px;"> <header class="modal-card-head">
+        <div class="modal-card" style="width: 700px;"> 
+            <header class="modal-card-head">
                 <p class="modal-card-title has-text-weight-bold">Emitir Nuevo Ticket</p>
                 <button class="delete" aria-label="close" onclick="cerrarModalReserva()"></button>
             </header>
             <section class="modal-card-body">
-                
                 <div class="columns">
                     <div class="column is-6">
                         <form id="formReserva">
-                            <div class="field">
-                                <label class="label">Seleccionar Vuelo</label>
-                                <div class="select is-fullwidth">
-                                    <select id="selectVueloRes" required onchange="renderizarAvion()">
-                                        <option value="">Cargando...</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <label class="label">Seleccionar Pasajero</label>
-                                <div class="select is-fullwidth">
-                                    <select id="selectPasajeroRes" required><option value="">Cargando...</option></select>
-                                </div>
-                            </div>
-
-                            <div class="field mt-5">
-                                <label class="label">Asiento Seleccionado</label>
-                                <div class="control has-icons-left">
-                                    <input class="input has-text-weight-bold has-text-info is-medium has-background-white-ter" type="text" id="inputAsiento" placeholder="Seleccione en el mapa ->" readonly required>
-                                    <span class="icon is-left"><i class="fa-solid fa-chair"></i></span>
-                                </div>
-                            </div>
+                            <div class="field"><label class="label">Seleccionar Vuelo</label><div class="select is-fullwidth"><select id="selectVueloRes" required onchange="renderizarAvion()"><option value="">Cargando...</option></select></div></div>
+                            <div class="field"><label class="label">Seleccionar Pasajero</label><div class="select is-fullwidth"><select id="selectPasajeroRes" required><option value="">Cargando...</option></select></div></div>
+                            <div class="field mt-5"><label class="label">Asiento Seleccionado</label><div class="control has-icons-left"><input class="input has-text-weight-bold has-text-info is-medium has-background-white-ter" type="text" id="inputAsiento" placeholder="Seleccione en el mapa ->" readonly required><span class="icon is-left"><i class="fa-solid fa-chair"></i></span></div></div>
                         </form>
                     </div>
-
                     <div class="column is-6">
                         <label class="label has-text-centered">Cabina del Avión</label>
-                        <div class="is-flex is-justify-content-center mb-2 is-size-7">
-                            <span class="mr-3"><i class="fa-solid fa-square has-text-success"></i> Libre</span>
-                            <span class="mr-3"><i class="fa-solid fa-square has-text-danger"></i> Ocupado</span>
-                            <span><i class="fa-solid fa-square has-text-info"></i> Tu Asiento</span>
-                        </div>
-                        
-                        <div id="mapaAsientosContainer" class="has-text-centered has-text-grey-light mt-5">
-                            <i class="fa-solid fa-plane fa-3x mb-3"></i><br>
-                            Seleccione un vuelo para ver la disponibilidad de asientos.
-                        </div>
+                        <div class="is-flex is-justify-content-center mb-2 is-size-7"><span class="mr-3"><i class="fa-solid fa-square has-text-success"></i> Libre</span><span class="mr-3"><i class="fa-solid fa-square has-text-danger"></i> Ocupado</span><span><i class="fa-solid fa-square has-text-info"></i> Tu Asiento</span></div>
+                        <div id="mapaAsientosContainer" class="has-text-centered has-text-grey-light mt-5"><i class="fa-solid fa-plane fa-3x mb-3"></i><br>Seleccione un vuelo para ver la disponibilidad de asientos.</div>
                     </div>
                 </div>
-
             </section>
             <footer class="modal-card-foot is-justify-content-flex-end">
                 <button type="button" class="button" onclick="cerrarModalReserva()">Cancelar</button>

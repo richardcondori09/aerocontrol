@@ -17,19 +17,14 @@
                     <h1 class="title is-4 has-text-white">AeroControl</h1>
                 </a>
             </div>
-            
             <p class="menu-label has-text-grey-light mt-5">Principal</p>
-            <ul class="menu-list">
-                <li><a href="dashboard.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-chart-pie mr-3"></i> Dashboard</a></li>
-            </ul>
-
+            <ul class="menu-list"><li><a href="dashboard.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-chart-pie mr-3"></i> Dashboard</a></li></ul>
             <p class="menu-label has-text-grey-light mt-5">Operaciones</p>
             <ul class="menu-list">
                 <li><a href="flota.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-jet-fighter mr-3"></i> Flota</a></li>
-                <li><a href="tripulacion.html" class="has-text-white has-background-info-dark mb-2 p-3"><i class="fa-solid fa-users-viewfinder mr-3"></i> Tripulación</a></li>
+                <li><a href="tripulacion.html" class="has-text-white has-background-info-dark mb-2 p-3" style="border-radius: 6px;"><i class="fa-solid fa-users-viewfinder mr-3"></i> Tripulación</a></li>
                 <li><a href="vuelos.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-map-location-dot mr-3"></i> Vuelos</a></li>
             </ul>
-
             <p class="menu-label has-text-grey-light mt-5">Comercial & Radar</p>
             <ul class="menu-list">
                 <li><a href="pasajeros.html" class="has-text-grey-light mb-2"><i class="fa-solid fa-passport mr-3"></i> Pasajeros</a></li>
@@ -38,39 +33,41 @@
             </ul>
         </aside>
 
-        <main class="column is-10 has-background-light p-6">
+        <main class="column is-10 has-background-light p-0" style="display: flex; flex-direction: column; min-height: 100vh;">
             
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-6">
-                <h2 class="title is-3 has-text-dark m-0">
-                    <i class="fa-solid fa-users has-text-info mr-2"></i> Personal de Vuelo
-                </h2>
-                <button class="button is-info" onclick="abrirModal()">
-                    <i class="fa-solid fa-user-plus mr-2"></i> Registrar Tripulante
-                </button>
-            </div>
+            <div style="flex-grow: 1;"></div>
 
-            <div class="box" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <div class="table-container">
-                    <table class="table is-fullwidth is-striped is-hoverable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre Completo</th>
-                                <th>Rol / Cargo</th>
-                                <th>Estado</th>
-                                <th class="has-text-centered">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-tripulacion">
-                            <tr>
-                                <td colspan="5" class="has-text-centered py-5">
-                                    <i class="fa-solid fa-spinner fa-spin has-text-info mr-2"></i> Cargando personal...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="container is-max-desktop px-6 py-6" style="width: 100%;">
+                <div class="is-flex is-justify-content-space-between is-align-items-center mb-6">
+                    <h2 class="title is-3 has-text-dark m-0">
+                        <i class="fa-solid fa-users has-text-info mr-2"></i> Personal de Vuelo
+                    </h2>
+                    <button class="button is-info" onclick="abrirModal()">
+                        <i class="fa-solid fa-user-plus mr-2"></i> Registrar Tripulante
+                    </button>
+                </div>
+
+                <div class="box" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div class="table-container">
+                        <table class="table is-fullwidth is-striped is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Rol / Cargo</th>
+                                    <th>Estado</th>
+                                    <th class="has-text-centered">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-tripulacion">
+                                <tr><td colspan="5" class="has-text-centered py-5"><i class="fa-solid fa-spinner fa-spin has-text-info mr-2"></i> Cargando personal...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
+            <div style="flex-grow: 2;"></div>
 
         </main>
     </div>
@@ -85,49 +82,10 @@
             <section class="modal-card-body">
                 <form id="formTripulacion">
                     <input type="hidden" id="inputIdTripulante">
-                    
-                    <div class="field">
-                        <label class="label">Licencia</label>
-                        <div class="control has-icons-left">
-                            <input class="input has-background-white-ter" type="text" id="inputLicencia" placeholder="Generación Automática..." readonly>
-                            <span class="icon is-small is-left"><i class="fa-solid fa-id-card"></i></span>
-                        </div>
-                        <p class="help has-text-grey">El sistema asignará el correlativo automáticamente al guardar.</p>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Nombre Completo</label>
-                        <div class="control has-icons-left">
-                            <input class="input" type="text" id="inputNombre" placeholder="Ej. Carlos Mendoza" required>
-                            <span class="icon is-small is-left"><i class="fa-solid fa-user"></i></span>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Rol / Cargo</label>
-                        <div class="control has-icons-left">
-                            <div class="select is-fullwidth">
-                                <select id="selectRol" required>
-                                    <option value="PILOTO">Piloto</option>
-                                    <option value="COPILOTO">Copiloto</option>
-                                    <option value="AZAFATA">Azafata / Sobrecargo</option>
-                                </select>
-                            </div>
-                            <span class="icon is-small is-left"><i class="fa-solid fa-id-badge"></i></span>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Estado</label>
-                        <div class="control">
-                            <div class="select is-fullwidth">
-                                <select id="selectEstado" required>
-                                    <option value="true">ACTIVO</option>
-                                    <option value="false">DE BAJA</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="field"><label class="label">Licencia</label><div class="control has-icons-left"><input class="input has-background-white-ter" type="text" id="inputLicencia" placeholder="Generación Automática..." readonly><span class="icon is-small is-left"><i class="fa-solid fa-id-card"></i></span></div><p class="help has-text-grey">El sistema asignará el correlativo automáticamente al guardar.</p></div>
+                    <div class="field"><label class="label">Nombre Completo</label><div class="control has-icons-left"><input class="input" type="text" id="inputNombre" placeholder="Ej. Carlos Mendoza" required><span class="icon is-small is-left"><i class="fa-solid fa-user"></i></span></div></div>
+                    <div class="field"><label class="label">Rol / Cargo</label><div class="control has-icons-left"><div class="select is-fullwidth"><select id="selectRol" required><option value="PILOTO">Piloto</option><option value="COPILOTO">Copiloto</option><option value="AZAFATA">Azafata / Sobrecargo</option></select></div><span class="icon is-small is-left"><i class="fa-solid fa-id-badge"></i></span></div></div>
+                    <div class="field"><label class="label">Estado</label><div class="control"><div class="select is-fullwidth"><select id="selectEstado" required><option value="true">ACTIVO</option><option value="false">DE BAJA</option></select></div></div></div>
                 </form>
             </section>
             <footer class="modal-card-foot is-justify-content-flex-end">
@@ -136,7 +94,6 @@
             </footer>
         </div>
     </div>
-
     <script src="../assets/js/tripulacion.js"></script>
 </body>
 </html>
